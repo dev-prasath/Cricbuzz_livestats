@@ -1,0 +1,162 @@
+@startuml Cricbuzz_Final_ER_Diagram
+hide circle
+skinparam linetype ortho
+skinparam shadowing false
+
+skinparam entity {
+    BackgroundColor White
+    BorderColor Black
+    FontSize 12
+}
+
+' ================================
+' CORE MATCH DATA
+' ================================
+package "Core Match Data" {
+
+entity teams #LightBlue {
+    team_id : BIGINT <<PK>>
+    team_name : TEXT
+    short_name : TEXT
+}
+
+entity venues #LightBlue {
+    venue_id : BIGINT <<PK>>
+    venue_name : TEXT
+    city : TEXT
+    country : TEXT
+    capacity : INTEGER
+}
+
+entity matches #LightBlue {
+    match_id : BIGINT <<PK>>
+    series_id : BIGINT <<FK>>
+    match_desc : TEXT
+    match_format : TEXT
+    start_date : TIMESTAMP
+    end_date : TIMESTAMP
+    status : TEXT
+    team1_id : BIGINT <<FK>>
+    team2_id : BIGINT <<FK>>
+    winner_team_id : BIGINT <<FK>>
+    venue : TEXT
+}
+
+entity series #LightBlue {
+    series_id : BIGINT <<PK>>
+    series_name : TEXT
+    start_date : TIMESTAMP
+    end_date : TIMESTAMP
+}
+
+}
+
+' ================================
+' PLAYER DATA
+' ================================
+package "Player Data" {
+
+entity players #LightGreen {
+    player_id : BIGINT <<PK>>
+    player_name : TEXT
+    team_id : BIGINT <<FK>>
+    batting_style : TEXT
+    bowling_style : TEXT
+    created_at : TIMESTAMP
+}
+
+entity player_rankings #LightGreen {
+    player_id : BIGINT <<PK,FK>>
+    ranking_type : TEXT <<PK>>
+    format_type : TEXT <<PK>>
+    rank : INTEGER
+    rating : INTEGER
+    points : INTEGER
+    trend : TEXT
+    last_updated : DATE
+}
+
+}
+
+' ================================
+' ANALYTICS TABLES
+' ================================
+package "Analytics" {
+
+entity top_run_scorers #LightYellow {
+    player_name : TEXT <<PK>>
+    format_type : TEXT <<PK>>
+    matches : INTEGER
+    innings : INTEGER
+    runs : INTEGER
+    batting_average : NUMERIC
+    rank_position : INTEGER
+    last_updated : DATE
+}
+
+entity top_wicket_takers #LightYellow {
+    player_name : TEXT <<PK>>
+    format_type : TEXT <<PK>>
+    matches : INTEGER
+    overs_bowled : NUMERIC
+    wickets : INTEGER
+    bowling_average : NUMERIC
+    rank_position : INTEGER
+    last_updated : DATE
+}
+
+entity highest_scores #LightYellow {
+    player_name : TEXT <<PK>>
+    format_type : TEXT <<PK>>
+    highest_score : INTEGER <<PK>>
+    balls : INTEGER
+    strike_rate : NUMERIC
+    opponent : TEXT
+}
+
+}
+
+' ================================
+' TEAM ANALYTICS
+' ================================
+package "Team Analytics" {
+
+entity team_icc_standings #LightPink {
+    team_id : BIGINT <<PK,FK>>
+    format_type : TEXT <<PK>>
+    rank : INTEGER
+    matches : INTEGER
+    wins : INTEGER
+    losses : INTEGER
+    ties : INTEGER
+    no_result : INTEGER
+    points : INTEGER
+    net_run_rate : NUMERIC
+    last_updated : DATE
+}
+
+}
+
+' ================================
+' RELATIONSHIPS
+' ================================
+
+' Teams ↔ Players
+teams ||--o{ players : has_players
+
+' Teams ↔ Matches
+teams ||--o{ matches : team1
+teams ||--o{ matches : team2
+teams ||--o{ matches : winner
+
+' Matches ↔ Series
+series ||--o{ matches : contains
+
+' Players ↔ Rankings
+players ||--o{ player_rankings : ranked
+
+' Teams ↔ ICC Standings
+teams ||--o{ team_icc_standings : standings
+
+
+@enduml
