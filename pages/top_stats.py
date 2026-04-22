@@ -3,28 +3,22 @@ import http.client
 import json
 import pandas as pd
 
-# -------------------------------------------------
 # PAGE CONFIG
-# -------------------------------------------------
 st.set_page_config(page_title="Player Stats", layout="wide")
 st.title("👤 Player Statistics")
 st.caption("Search a player and view career batting & bowling stats")
 st.markdown("---")
 
-# -------------------------------------------------
 # API CONFIG
-# -------------------------------------------------
 HOST = "cricbuzz-cricket.p.rapidapi.com"
-API_KEY = "d1d1206e78mshb418f1da663697ap109e25jsn86275d1f5944"
+API_KEY = "2767392619mshf3f20e34f8b3117p1ddd4fjsnb30bd89e03ed"
 
 HEADERS = {
     "x-rapidapi-key": API_KEY,
     "x-rapidapi-host": HOST
 }
 
-# -------------------------------------------------
 # SAFE STATS PARSER
-# -------------------------------------------------
 def parse_stats(data):
     if not isinstance(data, dict):
         return None
@@ -52,9 +46,7 @@ def parse_stats(data):
     df.set_index("Stat", inplace=True)
     return df
 
-# -------------------------------------------------
 # PLAYER SEARCH INPUT
-# -------------------------------------------------
 player_name = st.text_input(
     "🔍 Search player by name",
     placeholder="e.g. Virat Kohli, KL Rahul"
@@ -64,9 +56,7 @@ if not player_name:
     st.info("Please enter a player name to search.")
     st.stop()
 
-# -------------------------------------------------
 # SEARCH PLAYER API
-# -------------------------------------------------
 try:
     conn = http.client.HTTPSConnection(HOST, timeout=10)
     conn.request(
@@ -87,9 +77,7 @@ if not players:
     st.warning(f"No players found for '{player_name}'.")
     st.stop()
 
-# -------------------------------------------------
 # PLAYER SELECTION
-# -------------------------------------------------
 player_map = {
     f"{p['name']} ({p.get('teamName','')})": p["id"]
     for p in players
@@ -104,9 +92,7 @@ player_id = player_map[selected_player]
 
 st.markdown("---")
 
-# -------------------------------------------------
 # FETCH PLAYER PROFILE
-# -------------------------------------------------
 try:
     conn = http.client.HTTPSConnection(HOST, timeout=10)
     conn.request("GET", f"/stats/v1/player/{player_id}", headers=HEADERS)
@@ -116,9 +102,7 @@ except Exception:
     st.error("Unable to fetch player profile.")
     st.stop()
 
-# -------------------------------------------------
 # PLAYER OVERVIEW
-# -------------------------------------------------
 st.markdown("## 🧾 Player Overview")
 
 c1, c2, c3 = st.columns(3)
@@ -137,9 +121,7 @@ with c3:
 
 st.markdown("---")
 
-# -------------------------------------------------
 # FETCH & DISPLAY BATTING STATS
-# -------------------------------------------------
 st.markdown("## 🏏 Batting Career Stats")
 
 try:
@@ -159,9 +141,7 @@ except Exception:
 
 st.markdown("---")
 
-# -------------------------------------------------
 # FETCH & DISPLAY BOWLING STATS
-# -------------------------------------------------
 st.markdown("## 🎯 Bowling Career Stats")
 
 try:
