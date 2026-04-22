@@ -1,8 +1,6 @@
 import streamlit as st
 
-# -------------------------
 # PAGE CONFIG
-# -------------------------
 st.set_page_config(
     page_title="Home | Cricbuzz LiveStats",
     page_icon="🏏",
@@ -19,9 +17,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# -------------------------
 # MAIN CONTENT
-# -------------------------
 st.title("🏏 Cricbuzz LiveStats")
 st.subheader("Real-Time Cricket Insights & SQL-Based Analytics")
 
@@ -32,9 +28,7 @@ This dashboard provides live cricket match updates,
 player statistics, and SQL-based analytics using Cricbuzz API.
 """)
 
-# -------------------------
 # FEATURES
-# -------------------------
 st.subheader("📌 Features")
 
 col1, col2 = st.columns(2)
@@ -53,9 +47,8 @@ with col2:
 
 st.markdown("---")
 
-# -------------------------
+
 # TECH STACK
-# -------------------------
 st.subheader("🛠️ Tech Stack")
 
 st.markdown("""
@@ -67,9 +60,7 @@ st.markdown("""
 
 st.markdown("---")
 
-# -------------------------
 # QUICK NAV
-# -------------------------
 st.subheader("🚀 Get Started")
 
 col1, col2, col3,col4 = st.columns(4)

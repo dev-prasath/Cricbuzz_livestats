@@ -1,0 +1,13 @@
+📄 Requirements File
+
+The requirements.txt file lists all the Python libraries required to run the Cricbuzz LiveStats application. It ensures a consistent environment setup across different systems.
+
+📦 Dependencies
+streamlit – For building the interactive web dashboard
+pandas – For data manipulation and analysis
+requests – For fetching data from the Cricbuzz API
+psycopg2-binary / mysql-connector-python – For database connectivity
+python-dotenv – For managing environment variables securely
+
+Installation
+pip install -r requirements.txt

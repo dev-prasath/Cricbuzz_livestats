@@ -18,6 +18,8 @@ entity teams #LightBlue {
     team_id : BIGINT <<PK>>
     team_name : TEXT
     short_name : TEXT
+    team_type : TEXT
+    created_at : TIMESTAMP
 }
 
 entity venues #LightBlue {
@@ -25,21 +27,8 @@ entity venues #LightBlue {
     venue_name : TEXT
     city : TEXT
     country : TEXT
+    timezone : TEXT
     capacity : INTEGER
-}
-
-entity matches #LightBlue {
-    match_id : BIGINT <<PK>>
-    series_id : BIGINT <<FK>>
-    match_desc : TEXT
-    match_format : TEXT
-    start_date : TIMESTAMP
-    end_date : TIMESTAMP
-    status : TEXT
-    team1_id : BIGINT <<FK>>
-    team2_id : BIGINT <<FK>>
-    winner_team_id : BIGINT <<FK>>
-    venue : TEXT
 }
 
 entity series #LightBlue {
@@ -47,6 +36,25 @@ entity series #LightBlue {
     series_name : TEXT
     start_date : TIMESTAMP
     end_date : TIMESTAMP
+}
+
+entity matches_v2 #LightBlue {
+    match_id : BIGINT <<PK>>
+    series_id : BIGINT <<FK>>
+    match_desc : TEXT
+    match_format : TEXT
+    start_date : TIMESTAMP
+    end_date : TIMESTAMP
+    status : TEXT
+
+    team1_id : BIGINT <<FK>>
+    team2_id : BIGINT <<FK>>
+    winner_team_id : BIGINT <<FK>>
+
+    venue_id : BIGINT <<FK>>   ' 🔥 FIXED (was TEXT before)
+
+    win_type : TEXT
+    win_margin : INTEGER
 }
 
 }
@@ -63,6 +71,51 @@ entity players #LightGreen {
     batting_style : TEXT
     bowling_style : TEXT
     created_at : TIMESTAMP
+}
+
+' OLD TABLE (kept for compatibility)
+entity player_match_performance #LightGreen {
+    id : SERIAL <<PK>>
+    player_id : BIGINT <<FK>>
+    match_id : BIGINT <<FK>>
+    runs : INTEGER
+    balls : INTEGER
+    strike_rate : NUMERIC
+    overs : NUMERIC
+    wickets : INTEGER
+    economy : NUMERIC
+}
+
+' 🔥 NEW TABLE (USED IN Q15, Q16, Q25)
+entity player_match_performance_v2 #LightGreen {
+    match_id : BIGINT <<PK,FK>>
+    player_id : BIGINT <<PK,FK>>
+    runs : INTEGER
+    team_id : BIGINT <<FK>>
+}
+
+' 🔥 NEW TABLE (USED IN Q14)
+entity bowling_performance_v2 #LightGreen {
+    match_id : BIGINT <<PK,FK>>
+    player_id : BIGINT <<PK,FK>>
+    overs : NUMERIC
+    runs_conceded : INTEGER
+    wickets : INTEGER
+    economy : NUMERIC
+}
+
+entity player_format_stats #LightGreen {
+    player_id : BIGINT <<PK,FK>>
+    format_type : TEXT <<PK>>
+    matches : INTEGER
+    innings : INTEGER
+    runs : INTEGER
+    balls : INTEGER
+    highest_score : TEXT
+    batting_average : NUMERIC
+    strike_rate : NUMERIC
+    fours : INTEGER
+    sixes : INTEGER
 }
 
 entity player_rankings #LightGreen {
@@ -87,29 +140,24 @@ entity top_run_scorers #LightYellow {
     player_name : TEXT <<PK>>
     format_type : TEXT <<PK>>
     matches : INTEGER
-    innings : INTEGER
     runs : INTEGER
     batting_average : NUMERIC
     rank_position : INTEGER
-    last_updated : DATE
 }
 
 entity top_wicket_takers #LightYellow {
     player_name : TEXT <<PK>>
     format_type : TEXT <<PK>>
     matches : INTEGER
-    overs_bowled : NUMERIC
     wickets : INTEGER
     bowling_average : NUMERIC
     rank_position : INTEGER
-    last_updated : DATE
 }
 
 entity highest_scores #LightYellow {
     player_name : TEXT <<PK>>
     format_type : TEXT <<PK>>
     highest_score : INTEGER <<PK>>
-    balls : INTEGER
     strike_rate : NUMERIC
     opponent : TEXT
 }
@@ -128,11 +176,25 @@ entity team_icc_standings #LightPink {
     matches : INTEGER
     wins : INTEGER
     losses : INTEGER
-    ties : INTEGER
-    no_result : INTEGER
     points : INTEGER
     net_run_rate : NUMERIC
-    last_updated : DATE
+}
+
+}
+
+' ================================
+' PARTNERSHIP ANALYTICS
+' ================================
+package "Partnership Analytics" {
+
+entity partnerships #LightCoral {
+    id : SERIAL <<PK>>
+    match_id : BIGINT <<FK>>
+    innings : INTEGER
+    player1 : TEXT
+    player2 : TEXT
+    partnership_runs : INTEGER
+    created_at : TIMESTAMP
 }
 
 }
@@ -145,18 +207,39 @@ entity team_icc_standings #LightPink {
 teams ||--o{ players : has_players
 
 ' Teams ↔ Matches
-teams ||--o{ matches : team1
-teams ||--o{ matches : team2
-teams ||--o{ matches : winner
+teams ||--o{ matches_v2 : team1
+teams ||--o{ matches_v2 : team2
+teams ||--o{ matches_v2 : winner
 
 ' Matches ↔ Series
-series ||--o{ matches : contains
+series ||--o{ matches_v2 : contains
+
+' Matches ↔ Venue (NEW FIX)
+venues ||--o{ matches_v2 : hosted_at
+
+' OLD performance
+matches_v2 ||--o{ player_match_performance : has_performance
+players ||--o{ player_match_performance : plays
+
+' 🔥 NEW Batting Performance
+matches_v2 ||--o{ player_match_performance_v2 : batting_stats
+players ||--o{ player_match_performance_v2 : plays
+teams ||--o{ player_match_performance_v2 : belongs_to
+
+' 🔥 NEW Bowling Performance
+matches_v2 ||--o{ bowling_performance_v2 : bowling_stats
+players ||--o{ bowling_performance_v2 : bowls
+
+' Matches ↔ Partnerships
+matches_v2 ||--o{ partnerships : has_partnerships
 
 ' Players ↔ Rankings
 players ||--o{ player_rankings : ranked
 
+' Players ↔ Format Stats
+players ||--o{ player_format_stats : stats
+
 ' Teams ↔ ICC Standings
 teams ||--o{ team_icc_standings : standings
-
 
 @enduml

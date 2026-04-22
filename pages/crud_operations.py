@@ -3,22 +3,16 @@ import pandas as pd
 from datetime import date
 from utils.db_connection import get_connection
 
-# -------------------------
 # PAGE CONFIG
-# -------------------------
 st.set_page_config(page_title="Player Rankings CRUD", layout="wide")
 st.title("📊 ICC Player Rankings Management")
 st.markdown("---")
 
-# -------------------------
 # DB CONNECTION
-# -------------------------
 conn = get_connection()
 cursor = conn.cursor()
 
-# -------------------------
 # CREATE TABLE
-# -------------------------
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS player_rankings (
     player_id BIGINT,
@@ -37,18 +31,14 @@ CREATE TABLE IF NOT EXISTS player_rankings (
 """)
 conn.commit()
 
-# -------------------------
 # ENSURE SOURCE COLUMN EXISTS
-# -------------------------
 cursor.execute("""
 ALTER TABLE player_rankings 
 ADD COLUMN IF NOT EXISTS source TEXT;
 """)
 conn.commit()
 
-# -------------------------
 # MARK OLD DATA AS API
-# -------------------------
 cursor.execute("""
 UPDATE player_rankings
 SET source = 'api'
@@ -56,9 +46,7 @@ WHERE source IS NULL;
 """)
 conn.commit()
 
-# -------------------------
 # TABS
-# -------------------------
 tab1, tab2, tab3, tab4 = st.tabs([
     "➕ Add Ranking",
     "📄 View Rankings",
@@ -66,9 +54,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "❌ Delete Ranking"
 ])
 
-# =====================================================
 # ➕ ADD
-# =====================================================
 with tab1:
     st.subheader("➕ Add Player Ranking")
 
@@ -120,9 +106,7 @@ with tab1:
             except Exception as e:
                 st.error(f"Error: {e}")
 
-# =====================================================
 # 📄 VIEW
-# =====================================================
 with tab2:
     st.subheader("📄 Player Rankings")
 
@@ -177,9 +161,7 @@ with tab2:
             st.dataframe(df, use_container_width=True, hide_index=True)
             st.metric("🏆 Top Player", df.iloc[0]["player_name"])
 
-# =====================================================
 # ✏️ UPDATE (ONLY MANUAL)
-# =====================================================
 with tab3:
     st.subheader("✏️ Update Ranking")
 
@@ -220,12 +202,8 @@ with tab3:
             conn.commit()
             st.success("Updated successfully")
 
-# =====================================================
 # ❌ DELETE (ONLY MANUAL)
-# =====================================================
-# =====================================================
-# ❌ DELETE (ONLY MANUAL + CONFIRMATION)
-# =====================================================
+
 with tab4:
     st.subheader("❌ Delete Ranking")
 
@@ -250,22 +228,16 @@ with tab4:
 
         selected_row = df.iloc[options.tolist().index(selected)]
 
-        # -------------------------
         # SESSION STATE FLAG
-        # -------------------------
         if "confirm_delete" not in st.session_state:
             st.session_state.confirm_delete = False
 
-        # -------------------------
         # STEP 1: Ask Confirmation
-        # -------------------------
         if not st.session_state.confirm_delete:
             if st.button("Delete"):
                 st.session_state.confirm_delete = True
 
-        # -------------------------
         # STEP 2: Confirm Delete
-        # -------------------------
         else:
             st.warning("⚠️ Are you sure you want to delete this record?")
 
@@ -294,8 +266,6 @@ with tab4:
             with col2:
                 if st.button("❌ Cancel"):
                     st.session_state.confirm_delete = False
-# -------------------------
 # FOOTER
-# -------------------------
 st.markdown("---")
 st.caption("PostgreSQL CRUD | Cricbuzz Project")
