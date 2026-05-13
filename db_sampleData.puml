@@ -1,0 +1,146 @@
+@startuml Cricbuzz_Sample_Data
+
+hide circle
+skinparam linetype ortho
+
+' ==================================
+' TEAMS SAMPLE DATA
+' ==================================
+
+entity teams {
+    1 | India      | IND | International
+    2 | Australia  | AUS | International
+    3 | England    | ENG | International
+}
+
+' ==================================
+' VENUES SAMPLE DATA
+' ==================================
+
+entity venues {
+    101 | Wankhede Stadium | Mumbai     | India
+    102 | MCG              | Melbourne  | Australia
+    103 | Lords            | London     | England
+}
+
+' ==================================
+' SERIES SAMPLE DATA
+' ==================================
+
+entity series {
+    201 | India vs Australia ODI Series 2025
+    202 | Ashes 2025
+}
+
+' ==================================
+' MATCHES SAMPLE DATA
+' ==================================
+
+entity matches_v2 {
+    301 | IND vs AUS 1st ODI | ODI  | Winner: India
+    302 | ENG vs AUS Test    | Test | Winner: Australia
+}
+
+' ==================================
+' PLAYERS SAMPLE DATA
+' ==================================
+
+entity players {
+    401 | Virat Kohli    | India
+    402 | Rohit Sharma   | India
+    403 | Jasprit Bumrah | India
+    404 | Steve Smith    | Australia
+    405 | Pat Cummins    | Australia
+    406 | Joe Root       | England
+}
+
+' ==================================
+' PLAYER MATCH PERFORMANCE SAMPLE
+' ==================================
+
+entity player_match_performance_v2 {
+    Match 301 | Virat Kohli  | 85 Runs
+    Match 301 | Rohit Sharma | 64 Runs
+    Match 301 | Steve Smith  | 72 Runs
+    Match 302 | Joe Root     | 95 Runs
+}
+
+' ==================================
+' BOWLING PERFORMANCE SAMPLE
+' ==================================
+
+entity bowling_performance_v2 {
+    Match 301 | Bumrah   | 4 Wickets | Econ 4.2
+    Match 301 | Cummins  | 2 Wickets | Econ 5.8
+    Match 302 | Cummins  | 5 Wickets | Econ 2.9
+}
+
+' ==================================
+' PLAYER FORMAT STATS SAMPLE
+' ==================================
+
+entity player_format_stats {
+    Virat Kohli  | ODI  | 13848 Runs | Avg 57.3
+    Rohit Sharma | ODI  | 10866 Runs | Avg 49.1
+    Joe Root     | Test | 12000 Runs | Avg 50.4
+}
+
+' ==================================
+' PLAYER RANKINGS SAMPLE
+' ==================================
+
+entity player_rankings {
+    Virat Kohli  | ODI  | Rank 1
+    Steve Smith  | Test | Rank 2
+    Bumrah       | ODI  | Rank 1 Bowler
+}
+
+' ==================================
+' TOP RUN SCORERS SAMPLE
+' ==================================
+
+entity top_run_scorers {
+    Virat Kohli  | ODI  | 13848
+    Rohit Sharma | ODI  | 10866
+    Joe Root     | Test | 12000
+}
+
+' ==================================
+' TOP WICKET TAKERS SAMPLE
+' ==================================
+
+entity top_wicket_takers {
+    Bumrah       | ODI  | 325
+    Cummins      | Test | 280
+}
+
+' ==================================
+' HIGHEST SCORES SAMPLE
+' ==================================
+
+entity highest_scores {
+    Rohit Sharma | ODI  | 264
+    Virat Kohli  | ODI  | 183
+    Joe Root     | Test | 254
+}
+
+' ==================================
+' TEAM ICC STANDINGS SAMPLE
+' ==================================
+
+entity team_icc_standings {
+    India      | ODI  | Rank 1
+    Australia  | Test | Rank 1
+    England    | T20I | Rank 2
+}
+
+' ==================================
+' PARTNERSHIPS SAMPLE
+' ==================================
+
+entity partnerships {
+    Kohli + Rohit | 145 Runs
+    Root + Stokes | 122 Runs
+}
+
+@enduml
